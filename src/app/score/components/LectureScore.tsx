@@ -4,30 +4,34 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 interface LectureScoreProps {
-  result: {
+  result?: {
     content_score: number;
     delivery_score: number;
-    quiz: {
-      questions: {
+    quiz?: {
+      questions?: {
         correct_answer: string;
         gpt_answer: string;
         options: { [key: string]: string };
         question: string;
       }[];
     };
-    top_emotions: [string, number][];
-    quiz_colors: { [key: string]: string }[];
+    top_emotions?: [string, number][];
+    quiz_colors?: { [key: string]: string }[];
   };
 }
 
 const LectureScore: React.FC<LectureScoreProps> = ({ result }) => {
+  if (!result) {
+    return <div>Loading...</div>;
+  }
+
   const overallScore = Math.round((result.content_score + result.delivery_score) / 2);
 
-  const topEmotions = result.top_emotions.map(([emotion, points]) => ({
+  const topEmotions = result.top_emotions ? result.top_emotions.map(([emotion, points]) => ({
     emotion,
     points: points.toFixed(4),
     emoji: emotion === "Calmness" ? "😊" : emotion === "Sadness" ? "😢" : "💪"
-  }));
+  })) : [];
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
@@ -35,7 +39,7 @@ const LectureScore: React.FC<LectureScoreProps> = ({ result }) => {
       
       <div className="flex items-center justify-center mb-8">
         <div className="w-48 h-48 mr-8">
-          <CircularProgressbar 
+          <CircularProgressbar
             value={overallScore}
             text={`${overallScore}`}
             styles={buildStyles({
@@ -64,7 +68,7 @@ const LectureScore: React.FC<LectureScoreProps> = ({ result }) => {
           <h2 className="text-2xl font-bold mb-4">Content Score</h2>
           <p className="text-5xl font-bold mb-4">{result.content_score}</p>
 
-          {result.quiz.questions.map((question, index) => (
+          {result.quiz?.questions?.map((question, index) => (
             <div key={index} className="flex items-center mb-4">
               <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white mr-4">
                 {index + 1}
@@ -73,14 +77,12 @@ const LectureScore: React.FC<LectureScoreProps> = ({ result }) => {
                 <p className="mb-1">{question.question}</p>
                 <div className="flex flex-wrap space-x-2">
                   {Object.entries(question.options).map(([key, value]) => (
-                    <div 
-                      key={key} 
-                      className={`flex items-center justify-center px-4 py-1 rounded-md ${
-                        result.quiz_colors[index][key]
-                      } w-24 text-center border`}
+                    <div
+                      key={key}
+                      className={`flex items-center justify-center px-4 py-1 rounded-md w-24 text-center border`}
                       style={{
-                        backgroundColor: result.quiz_colors[index][key],
-                        color: 'black', // Ensure text color is black
+                        backgroundColor: result.quiz_colors?.[index]?.[key] || 'white',
+                        color: 'black',
                       }}
                     >
                       {value}
