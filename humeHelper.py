@@ -47,6 +47,7 @@ class HumeHelper():
                 score += emotionMap[key]*4
             if key in goodEmotions or key in badEmotions:
                 emotionList.append((-emotionMap[key], key))
+        score = int((score + 0.5) * 100)
         emotionList.sort()
         topThreeEmotions = [(tup[1], -tup[0]) for tup in emotionList[:3]]
 

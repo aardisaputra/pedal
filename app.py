@@ -4,6 +4,41 @@ from llamaHelper import LlamaHelper
 import os
 from flask_cors import CORS
 
+quiz = {
+  "questions": [
+    {
+      "question": "What is the powerhouse of the cell?",
+      "options": {
+        "A": "Nucleus",
+        "B": "Mitochondria",
+        "C": "Ribosome",
+        "D": "Chloroplast"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "Which organelle is responsible for photosynthesis in plant cells?",
+      "options": {
+        "A": "Mitochondria",
+        "B": "Chloroplast",
+        "C": "Ribosome",
+        "D": "Endoplasmic Reticulum"
+      },
+      "correct_answer": "B"
+    },
+    {
+      "question": "What structure controls the movement of substances in and out of the cell?",
+      "options": {
+        "A": "Cell membrane",
+        "B": "Nucleus",
+        "C": "Cytoplasm",
+        "D": "Lysosome"
+      },
+      "correct_answer": "A"
+    }
+  ]
+}
+
 app = Flask(__name__)
 CORS(app)
 
@@ -14,14 +49,14 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("bio_bad.mp3")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], "What is the powerhouse of the cell?")
+    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], quiz)
     data = {
         'content_score': llamaData['score'],
         'delivery_score': humeData['score'],
         'top_emotions': humeData['top_emotions'],
-        'transcript': humeData['transcript'], #will remove
-        'answer': llamaData['answer'] #will remove, for debugging
+        'quiz': llamaData['quiz'],
+        'transcript': humeData['transcript'] #will remove
     }
     return jsonify(data)
 
