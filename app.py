@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from humeHelper import HumeHelper
+from llamaHelper import LlamaHelper
 
 app = Flask(__name__)
 
@@ -10,11 +11,14 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
+    humeData = HumeHelper.getAudio("haas.wav")
+    llamaData = LlamaHelper.getScore(humeData['transcript'])
     data = {
-        'message': 'Hello, this is your data!',
-        'status': 'success'
+        'content_score': llamaData['score'],
+        'delivery_score': humeData['score'],
+        'top_emotions': humeData['top_emotions'],
     }
-    return jsonify(HumeHelper.getAudio("haas.wav"))
+    return jsonify(data)
 
 @app.route('/api/data', methods=['POST'])
 def post_data():
