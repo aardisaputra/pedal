@@ -3,6 +3,10 @@ from flask_cors import CORS
 
 system_prompt = "You are a typical middle school student who knows about as much as a typical middle schoold student would. You will be given a lecture and will learn from it. You will then be asked to complete a quiz and must ONLY use the information learnt from the lecture to answer it. Furthermore, ONLY answer with THREE and EXACTLY THREE letters referring to the correct answer choices. For example, to answer A for question 1, B for question 2, and A for question 3, simply respond with ABA and nothing else. If you write anything more than three characters, I will cut off my leg."
 NUM_QUESTIONS = 3
+GREEN = "#90d667"
+YELLOW = "#f2f272"
+RED = "#eb4949"
+WHITE = "white"
 
 def quizParser(quiz):
         quizString = ""
@@ -32,13 +36,13 @@ class LlamaHelper():
         quiz_colors = [{}, {}, {}]
         for i in range(3):
             for key in ["A", "B", "C", "D"]:
-                quiz_colors[i][key] = "white"
+                quiz_colors[i][key] = WHITE
             if answer[i] == quiz["questions"][i]["correct_answer"]:
-                quiz_colors[i][answer[i]] = "green"
+                quiz_colors[i][answer[i]] = GREEN
                 correct_ans += 1
             else:
-                 quiz_colors[i][answer[i]] = "red"
-                 quiz_colors[i][quiz["questions"][i]["correct_answer"]] = "yellow"
+                 quiz_colors[i][answer[i]] = RED
+                 quiz_colors[i][quiz["questions"][i]["correct_answer"]] = YELLOW
             quiz["questions"][i]["gpt_answer"] = answer[i]
             
         toJson = {}
