@@ -18,12 +18,10 @@ class HumeHelper():
 
         job = client.submit_job(None, [prosodyConfig], files=filepaths)
 
-        print(job)
-        print("Running...")
+        print("Running HumeHelper...")
 
         details = job.await_complete()
         jsonRet = job.get_predictions()
-        print(jsonRet)
         predictions = jsonRet[0]["results"]["predictions"][0]["models"]["prosody"]["grouped_predictions"][0]["predictions"]
         transcript = ""
         emotionMap = None
@@ -49,12 +47,11 @@ class HumeHelper():
                 emotionList.append((-emotionMap[key], key))
         score = int((score + 0.5) * 100)
         emotionList.sort()
-        topThreeEmotions = [(tup[1], -tup[0]) for tup in emotionList[:3]]
+        topThreeEmotions = [(tup[1], round(-tup[0]*10000)/1000) for tup in emotionList[:3]]
 
         toJson = {}
         toJson["transcript"] = transcript
         toJson["score"] = score
         toJson["top_emotions"] = topThreeEmotions
+        print("HumeHelper completed!")
         return toJson
-        predictions = job.download_predictions("predictions.json")
-        print("Predictions downloaded to predictions.json")

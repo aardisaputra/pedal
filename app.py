@@ -3,8 +3,11 @@ from humeHelper import HumeHelper
 from llamaHelper import LlamaHelper
 import os
 from flask_cors import CORS
+import time
 
-quizes = {
+LAMB = 0.5
+
+QUIZES = {
   "biology": {
     "topic": "Cell Structure",
     "questions": [
@@ -122,56 +125,26 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["history"])
+    audio_path = "/Users/owengozali/Downloads/recording.webm"
+    while not os.path.exists(audio_path):
+        print("Waiting for file to download...")
+        time.sleep(0.5)
+    humeData = HumeHelper.getAudio(audio_path)
+    llamaData = LlamaHelper.getScore(humeData['transcript'], QUIZES["history"])
     data = {
+        'overall_score': round((1-LAMB)*llamaData['score'] + LAMB * humeData['score']),
         'content_score': llamaData['score'],
         'delivery_score': humeData['score'],
         'top_emotions': humeData['top_emotions'],
+        'quiz_colors': llamaData['quiz_colors'],
         'quiz': llamaData['quiz'],
         'transcript': humeData['transcript'] #will remove
     }
-    return jsonify(data)
-
-@app.route('/api/data/bio', methods=['GET'])
-def get_data_bio():
-    # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["biology"])
-    data = {
-        'content_score': llamaData['score'],
-        'delivery_score': humeData['score'],
-        'top_emotions': humeData['top_emotions'],
-        'quiz': llamaData['quiz'],
-        'transcript': humeData['transcript'] #will remove
-    }
-    return jsonify(data)
-
-@app.route('/api/data/history', methods=['GET'])
-def get_data_history():
-    # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["history"])
-    data = {
-        'content_score': llamaData['score'],
-        'delivery_score': humeData['score'],
-        'top_emotions': humeData['top_emotions'],
-        'quiz': llamaData['quiz'],
-        'transcript': humeData['transcript'] #will remove
-    }
-    return jsonify(data)
-
-@app.route('/api/data/geography', methods=['GET'])
-def get_data_geography():
-    # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["geography"])
-    data = {
-        'content_score': llamaData['score'],
-        'delivery_score': humeData['score'],
-        'top_emotions': humeData['top_emotions'],
-        'quiz': llamaData['quiz'],
-        'transcript': humeData['transcript'] #will remove
+    print(data)
+    response = {
+        "ok": "true",
+        "message": f"Data has been fetched.",
+        "data": data,
     }
     return jsonify(data)
 

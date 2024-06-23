@@ -44,10 +44,7 @@ const VideoRecorder = () => {
       console.log("test test test");
       const fetchData = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:5000/api/data");
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
+          const response = await fetch("http://127.0.0.1:5000/api/data", {mode: 'no-cors'});
           const result = await response.json();
           console.log(result);
           setData(result);
