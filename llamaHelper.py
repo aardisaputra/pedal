@@ -2,7 +2,7 @@ from openai import OpenAI
 
 system_prompt = "You are a typical middle school student who knows about as much as a typical middle schoold student would. You will be given a lecture and will learn from it. You will then be asked to complete a quiz and must ONLY use the information learnt from the lecture to answer it."
 
-OPEN_AI_KEY = "sk-proj-wN0dBaSzfmjCG2wnPv4HT3BlbkFJGj3aVCzlq9Mw6LeWEwgk"
+OPEN_AI_KEY = ""
 
 class LlamaHelper():
 
