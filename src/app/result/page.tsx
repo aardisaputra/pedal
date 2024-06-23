@@ -5,9 +5,7 @@ export default function Result() {
   return (
     <main>
       <div className="flex bg-white h-screen justify-center">
-        <div className="flex-col mt-32">
-          <VideoRecorder />
-        </div>
+        <div className="flex-col mt-32"></div>
       </div>
     </main>
   );
