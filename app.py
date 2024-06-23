@@ -49,7 +49,7 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    humeData = HumeHelper.getAudio("/Users/aardisaputra/Downloads/recording.webm")
     llamaData = LlamaHelper.getScore(humeData['transcript'], quiz)
     data = {
         'content_score': llamaData['score'],
@@ -71,4 +71,5 @@ def post_data():
     return jsonify(response)
 
 if __name__ == '__main__':
+    CORS(app)
     app.run(debug=True)

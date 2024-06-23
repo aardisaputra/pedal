@@ -66,6 +66,12 @@ const VideoRecorder = () => {
       ) : (
         <button onClick={startRecording}>Start Recording</button>
       )}
+      <video ref={videoRef} autoPlay muted style={{ width: "100%" }}></video>
+      {recording ? (
+        <button onClick={stopRecording}>Stop Recording</button>
+      ) : (
+        <button onClick={startRecording}>Start Recording</button>
+      )}
     </div>
   );
 };
