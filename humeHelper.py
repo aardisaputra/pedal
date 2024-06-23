@@ -53,5 +53,6 @@ class HumeHelper():
         toJson["transcript"] = transcript
         toJson["score"] = score
         toJson["top_emotions"] = topThreeEmotions
+        toJson.headers.add('Access-Control-Allow-Origin', '*')
         print("HumeHelper completed!")
         return toJson

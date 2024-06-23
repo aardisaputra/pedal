@@ -1,5 +1,5 @@
 from openai import OpenAI
-from flask_cors import CORS
+from flask import Flask, jsonify, request
 
 system_prompt = "You are a typical middle school student who knows about as much as a typical middle schoold student would. You will be given a lecture and will learn from it. You will then be asked to complete a quiz and must ONLY use the information learnt from the lecture to answer it. Furthermore, ONLY answer with THREE and EXACTLY THREE letters referring to the correct answer choices. For example, to answer A for question 1, B for question 2, and A for question 3, simply respond with ABA and nothing else. If you write anything more than three characters, I will cut off my leg."
 NUM_QUESTIONS = 3
@@ -22,7 +22,7 @@ class LlamaHelper():
 
     def getScore(lecture_transcript, quiz):
         print("Running LlamaHelper...")
-        client = OpenAI(api_key="sk-proj-MP9AcmHIjh20MVlRml7fT3BlbkFJKteGqWprpBA38jhkUrE3")
+        client = OpenAI(api_key="")
         
         completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -50,5 +50,7 @@ class LlamaHelper():
         toJson["score"] = int(correct_ans*(100/NUM_QUESTIONS))
         toJson["quiz"] = quiz
         toJson["quiz_colors"] = quiz_colors
+        toJson = jsonify(toJson)
+        toJson.headers.add('Access-Control-Allow-Origin', '*')
         print("LlamaHelper completed!")
         return toJson

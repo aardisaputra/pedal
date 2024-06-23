@@ -42,51 +42,48 @@ const VideoRecorder = () => {
     });
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
-      videoRef.current.muted = true; // Mute the video element to prevent audio playback
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        chunksRef.current.push(event.data);
+      };
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(chunksRef.current, {
+          type: "video/webm",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "recording.webm";
+        a.click();
+        URL.revokeObjectURL(url);
+        chunksRef.current = [];
+      };
+      mediaRecorderRef.current.start();
+      setRecording(true);
+    } catch (error) {
+      console.error("Error accessing media devices.", error);
     }
-
-    mediaRecorderRef.current = new MediaRecorder(stream);
-    mediaRecorderRef.current.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        setRecordedChunks((prev) => [...prev, event.data]);
-      }
-    };
-    mediaRecorderRef.current.start();
-    setIsRecording(true);
   };
-
   const stopRecording = () => {
-    mediaRecorderRef.current.stop();
-    setIsRecording(false);
-
-    setDoneRecording(true);
-    const blob = new Blob(recordedChunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "recording.webm";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    console.log("test test test");
-
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/api/data");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
+      mediaRecorderRef.current.stop();
+      setRecording(false);
+      console.log("test test test");
+      const fetchData = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/api/data");
+          const result = await response.json();
+          console.log(result);
+          setData(result);
+        } catch (error: any) {
+          console.log(error);
         }
-        const result = await response.json();
-        console.log(result);
-        setData(result);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
-
-    fetchData();
+      };
+      fetchData();
+    }
   };
 
   return (
