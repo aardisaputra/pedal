@@ -6,6 +6,9 @@ const VideoRecorder = () => {
   const mediaRecorderRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [doneRecording, setDoneRecording] = useState(false);
 
   useEffect(() => {
     const initializeCamera = async () => {
@@ -31,8 +34,14 @@ const VideoRecorder = () => {
 
   const startRecording = async () => {
     setRecordedChunks([]);
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    videoRef.current.srcObject = stream;
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.muted = true; // Mute the video element to prevent audio playback
+    }
 
     mediaRecorderRef.current = new MediaRecorder(stream);
     mediaRecorderRef.current.ondataavailable = (event) => {
@@ -47,34 +56,51 @@ const VideoRecorder = () => {
   const stopRecording = () => {
     mediaRecorderRef.current.stop();
     setIsRecording(false);
-  };
 
-  const downloadRecording = () => {
+    setDoneRecording(true);
     const blob = new Blob(recordedChunks, { type: "video/webm" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style = "display: none";
     a.href = url;
     a.download = "recording.webm";
+    document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log("test test test");
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/data");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        console.log(result);
+        setData(result);
+      } catch (error: any) {
+        setError(error.message);
+      }
+    };
+
+    fetchData();
   };
 
   return (
     <div className="text-black">
       <video ref={videoRef} autoPlay playsInline></video>
       <div className="flex justify-center">
-        <button
-          className="bg-gray-300 mt-5"
-          onClick={isRecording ? stopRecording : startRecording}
-        >
-          {isRecording ? "Stop Recording" : "Start Recording"}
-        </button>
-        {recordedChunks.length > 0 && (
-          <button onClick={downloadRecording}>Submit Recording</button>
+        {!doneRecording && (
+          <div>
+            <button
+              className="bg-gray-300 mt-5"
+              onClick={isRecording ? stopRecording : startRecording}
+            >
+              {isRecording ? "Stop Recording" : "Start Recording"}
+            </button>
+          </div>
         )}
-        {/*Substitute onclick function to submit to hume*/}
       </div>
     </div>
   );

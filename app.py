@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request
 from humeHelper import HumeHelper
 from llamaHelper import LlamaHelper
+import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def home():
@@ -11,12 +14,14 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("haas.wav")
-    llamaData = LlamaHelper.getScore(humeData['transcript'])
+    humeData = HumeHelper.getAudio("bio_bad.mp3")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], "What is the powerhouse of the cell?")
     data = {
         'content_score': llamaData['score'],
         'delivery_score': humeData['score'],
         'top_emotions': humeData['top_emotions'],
+        'transcript': humeData['transcript'], #will remove
+        'answer': llamaData['answer'] #will remove, for debugging
     }
     return jsonify(data)
 
