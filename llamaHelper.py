@@ -19,6 +19,3 @@ class LlamaHelper():
         toJson["score"] = 10
         toJson["answer"] = str(completion.choices[0].message)
         return toJson
-    
-
-# LlamaHelper.getScore("The palisade is the cell wall.", "What is the palisade?")
