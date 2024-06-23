@@ -16,6 +16,7 @@ def quizParser(quiz):
                 quizString += f'{option}) {question["options"][option]}\n'
             quizString += '\n'
         return quizString
+OPEN_AI_KEY = "sk-proj-wN0dBaSzfmjCG2wnPv4HT3BlbkFJGj3aVCzlq9Mw6LeWEwgk"
 
 class LlamaHelper():
 
