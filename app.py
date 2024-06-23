@@ -4,39 +4,112 @@ from llamaHelper import LlamaHelper
 import os
 from flask_cors import CORS
 
-quiz = {
-  "questions": [
-    {
-      "question": "What is the powerhouse of the cell?",
-      "options": {
-        "A": "Nucleus",
-        "B": "Mitochondria",
-        "C": "Ribosome",
-        "D": "Chloroplast"
+quizes = {
+  "biology": {
+    "topic": "Cell Structure",
+    "questions": [
+      {
+        "question": "What is the powerhouse of the cell?",
+        "options": {
+          "A": "Nucleus",
+          "B": "Ribosome",
+          "C": "Mitochondrion",
+          "D": "Endoplasmic Reticulum"
+        },
+        "correct_answer": "C"
       },
-      "correct_answer": "B"
-    },
-    {
-      "question": "Which organelle is responsible for photosynthesis in plant cells?",
-      "options": {
-        "A": "Mitochondria",
-        "B": "Chloroplast",
-        "C": "Ribosome",
-        "D": "Endoplasmic Reticulum"
+      {
+        "question": "Which organelle is responsible for protein synthesis?",
+        "options": {
+          "A": "Lysosome",
+          "B": "Ribosome",
+          "C": "Golgi Apparatus",
+          "D": "Vacuole"
+        },
+        "correct_answer": "B"
       },
-      "correct_answer": "B"
-    },
-    {
-      "question": "What structure controls the movement of substances in and out of the cell?",
-      "options": {
-        "A": "Cell membrane",
-        "B": "Nucleus",
-        "C": "Cytoplasm",
-        "D": "Lysosome"
+      {
+        "question": "What is the function of the nucleus in a cell?",
+        "options": {
+          "A": "Produces energy",
+          "B": "Synthesizes proteins",
+          "C": "Contains genetic material",
+          "D": "Packages and distributes proteins"
+        },
+        "correct_answer": "C"
+      }
+    ]
+  },
+  "geography": {
+    "topic": "Continents and Oceans",
+    "questions": [
+      {
+        "question": "Which is the largest continent by land area?",
+        "options": {
+          "A": "Africa",
+          "B": "Asia",
+          "C": "North America",
+          "D": "Europe"
+        },
+        "correct_answer": "B"
       },
-      "correct_answer": "A"
-    }
-  ]
+      {
+        "question": "Which ocean is the deepest?",
+        "options": {
+          "A": "Atlantic Ocean",
+          "B": "Indian Ocean",
+          "C": "Arctic Ocean",
+          "D": "Pacific Ocean"
+        },
+        "correct_answer": "D"
+      },
+      {
+        "question": "Which continent is known as the 'Frozen Continent'?",
+        "options": {
+          "A": "Antarctica",
+          "B": "Australia",
+          "C": "Europe",
+          "D": "South America"
+        },
+        "correct_answer": "A"
+      }
+    ]
+  },
+  "history": {
+    "topic": "American Revolutionary War",
+    "questions": [
+      {
+        "question": "Who was the primary author of the Declaration of Independence?",
+        "options": {
+          "A": "George Washington",
+          "B": "Benjamin Franklin",
+          "C": "Thomas Jefferson",
+          "D": "John Adams"
+        },
+        "correct_answer": "C"
+      },
+      {
+        "question": "In which year did the American Revolutionary War officially begin?",
+        "options": {
+          "A": "1775",
+          "B": "1776",
+          "C": "1781",
+          "D": "1783"
+        },
+        "correct_answer": "A"
+      },
+      {
+        "question": "Which battle is considered the turning point of the American Revolutionary War?",
+        "options": {
+          "A": "Battle of Bunker Hill",
+          "B": "Battle of Saratoga",
+          "C": "Battle of Yorktown",
+          "D": "Battle of Lexington and Concord"
+        },
+        "correct_answer": "B"
+      }
+    ]
+  }
 }
 
 app = Flask(__name__)
@@ -49,8 +122,50 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    humeData = HumeHelper.getAudio("/Users/aardisaputra/Downloads/recording.webm")
-    llamaData = LlamaHelper.getScore(humeData['transcript'], quiz)
+    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["history"])
+    data = {
+        'content_score': llamaData['score'],
+        'delivery_score': humeData['score'],
+        'top_emotions': humeData['top_emotions'],
+        'quiz': llamaData['quiz'],
+        'transcript': humeData['transcript'] #will remove
+    }
+    return jsonify(data)
+
+@app.route('/api/data/bio', methods=['GET'])
+def get_data_bio():
+    # Example endpoint that returns some data
+    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["biology"])
+    data = {
+        'content_score': llamaData['score'],
+        'delivery_score': humeData['score'],
+        'top_emotions': humeData['top_emotions'],
+        'quiz': llamaData['quiz'],
+        'transcript': humeData['transcript'] #will remove
+    }
+    return jsonify(data)
+
+@app.route('/api/data/history', methods=['GET'])
+def get_data_history():
+    # Example endpoint that returns some data
+    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["history"])
+    data = {
+        'content_score': llamaData['score'],
+        'delivery_score': humeData['score'],
+        'top_emotions': humeData['top_emotions'],
+        'quiz': llamaData['quiz'],
+        'transcript': humeData['transcript'] #will remove
+    }
+    return jsonify(data)
+
+@app.route('/api/data/geography', methods=['GET'])
+def get_data_geography():
+    # Example endpoint that returns some data
+    humeData = HumeHelper.getAudio("/Users/owengozali/Downloads/recording.webm")
+    llamaData = LlamaHelper.getScore(humeData['transcript'], quizes["geography"])
     data = {
         'content_score': llamaData['score'],
         'delivery_score': humeData['score'],
