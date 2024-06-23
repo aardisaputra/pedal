@@ -125,28 +125,26 @@ def home():
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example endpoint that returns some data
-    audio_path = "/Users/owengozali/Downloads/recording.webm"
-    while not os.path.exists(audio_path):
-        print("Waiting for file to download...")
-        time.sleep(0.5)
-    humeData = HumeHelper.getAudio(audio_path)
-    llamaData = LlamaHelper.getScore(humeData['transcript'], QUIZES["history"])
-    data = {
-        'overall_score': round((1-LAMB)*llamaData['score'] + LAMB * humeData['score']),
-        'content_score': llamaData['score'],
-        'delivery_score': humeData['score'],
-        'top_emotions': humeData['top_emotions'],
-        'quiz_colors': llamaData['quiz_colors'],
-        'quiz': llamaData['quiz'],
-        'transcript': humeData['transcript'] #will remove
-    }
-    print(data)
-    response = {
-        "ok": "true",
-        "message": f"Data has been fetched.",
-        "data": data,
-    }
-    return jsonify(data)
+    # audio_path = "/Users/owengozali/Downloads/recording.webm"
+    # while not os.path.exists(audio_path):
+    #     print("Waiting for file to download...")
+    #     time.sleep(0.5)
+    # humeData = HumeHelper.getAudio(audio_path)
+    # llamaData = LlamaHelper.getScore(humeData['transcript'], QUIZES["history"])
+    # data = {
+    #     'overall_score': round((1-LAMB)*llamaData['score'] + LAMB * humeData['score']),
+    #     'content_score': llamaData['score'],
+    #     'delivery_score': humeData['score'],
+    #     'top_emotions': humeData['top_emotions'],
+    #     'quiz_colors': llamaData['quiz_colors'],
+    #     'quiz': llamaData['quiz'],
+    #     'transcript': humeData['transcript'] #will remove
+    # }
+    # print(data)
+    data = {}
+    final_resp = jsonify(data)
+    final_resp.headers.add("Access-Control-Allow-Origin", "*")
+    return final_resp
 
 @app.route('/api/data', methods=['POST'])
 def post_data():

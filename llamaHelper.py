@@ -21,7 +21,7 @@ class LlamaHelper():
 
     def getScore(lecture_transcript, quiz):
         print("Running LlamaHelper...")
-        client = OpenAI(api_key="")
+        client = OpenAI(api_key="sk-proj-MP9AcmHIjh20MVlRml7fT3BlbkFJKteGqWprpBA38jhkUrE3")
         
         completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
