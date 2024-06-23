@@ -15,6 +15,7 @@ class HumeHelper():
         prosodyConfig = ProsodyConfig()
         burstConfig = BurstConfig()
 
+
         job = client.submit_job(None, [prosodyConfig], files=filepaths)
 
         print(job)
@@ -22,11 +23,12 @@ class HumeHelper():
 
         details = job.await_complete()
         jsonRet = job.get_predictions()
+        print(jsonRet)
         predictions = jsonRet[0]["results"]["predictions"][0]["models"]["prosody"]["grouped_predictions"][0]["predictions"]
         transcript = ""
         emotionMap = None
         for prediction in predictions:
-            transcript += prediction["text"]
+            transcript += " " + prediction["text"]
             if emotionMap == None:
                 emotionMap = {}
                 for emotion in prediction["emotions"]:
