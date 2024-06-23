@@ -1,9 +1,10 @@
 import Image from "next/image";
+import VideoRecorder from "../components/VideoRecorder";
 
 export default function Home() {
   return (
     <main>
-      <div className="flex h-24 bg-white justify-center">
+      {/* <div className="flex h-24 bg-white justify-center">
         <div className="text-black mt-8">
           <h1>LOGO INSERT HERE</h1>
         </div>
@@ -11,6 +12,12 @@ export default function Home() {
       <div className="flex bg-gray-300 justify-center">
         <div className="h-48 mt-8">
           <h1>LOGO INSERT HERE</h1>
+        </div>
+      </div> */}
+
+      <div className="flex bg-white h-screen justify-center">
+        <div className="flex-col mt-32">
+          <VideoRecorder />
         </div>
       </div>
     </main>
