@@ -1,5 +1,8 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
+import LectureScore from '../app/score/components/LectureScore';
+import Link from 'next/link';
+
 
 const VideoRecorder = () => {
   const videoRef = useRef(null);
@@ -97,11 +100,15 @@ const VideoRecorder = () => {
               className="bg-gray-300 mt-5"
               onClick={isRecording ? stopRecording : startRecording}
             >
-              {isRecording ? "Stop Recording" : "Start Recording"}
+              {isRecording ? (
+              <Link href="score/">
+              Stop Recording
+            </Link>) : "Start Recording"}
             </button>
           </div>
         )}
       </div>
+      {data && <LectureScore result={data} />}
     </div>
   );
 };
