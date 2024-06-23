@@ -1,5 +1,5 @@
 import Image from "next/image";
-import VideoRecorder from "../components/VideoRecorder";
+import VideoRecorder from "../../components/VideoRecorder";
 
 export default function Record() {
   return (
